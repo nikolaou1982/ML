@@ -26,131 +26,49 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { SidebarGroup, SidebarGroupLabel } from "@/components/ui/sidebar"
 import { Send } from "lucide-react"
 
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+const categories = [
+  {
+    title: "Partitioning (Centroid-based)",
+    items: [
+      { id: "kmeans", title: "K-Means (The Classic)" },
+      { id: "kmedoids", title: "K-Medoids (Robust to outliers)" },
+      { id: "meanshift", title: "Mean Shift (No k required) (New)" },
+      { id: "fuzzycmeans", title: "Fuzzy C-Means (Soft clustering)" },
+    ],
   },
-  navMain: [
-    {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Support",
-      url: "#",
-      icon: LifeBuoy,
-    },
-    {
-      title: "Feedback",
-      url: "#",
-      icon: Send,
-    },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
-}
+  {
+    title: "Density-Based (Shape-based)",
+    items: [
+      { id: "dbscan", title: "DBSCAN (The Classic)" },
+      { id: "hdbscan", title: "HDBSCAN (The Modern Standard - Must have)" },
+      { id: "optics", title: "OPTICS (Variable density)" },
+    ],
+  },
+  {
+    title: "Hierarchical (Tree-based)",
+    items: [
+      { id: "agglomerative", title: "Agglomerative (Bottom-up)" },
+      { id: "birch", title: "BIRCH (For large datasets) (New)" },
+      { id: "bisecting_kmeans", title: "Bisecting K-Means (Replaces \"Hierarchical K-Means\")" },
+    ],
+  },
+  {
+    title: "Probabilistic & Graph",
+    items: [
+      { id: "gmm", title: "Gaussian Mixture (GMM) (Elliptical clusters)" },
+      { id: "spectral", title: "Spectral Clustering (Graph connectivity)" },
+      { id: "affinity", title: "Affinity Propagation (Message passing) (New)" },
+    ],
+  },
+]
+
+const navSecondary = [
+  { title: "Support", url: "#", icon: LifeBuoy },
+  { title: "Feedback", url: "#", icon: Send },
+]
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -176,9 +94,36 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        {categories.map((cat) => (
+          <SidebarGroup key={cat.title}>
+            <SidebarGroupLabel>{cat.title}</SidebarGroupLabel>
+            <SidebarMenu>
+              {cat.items.map((it) => (
+                <SidebarMenuItem key={it.id ?? it.title}>
+                  <SidebarMenuButton asChild>
+                    <a href={`/dashboard/clustering?algorithm=${it.id}`} className="flex items-center gap-2">
+                      <span className="truncate">{it.title}</span>
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
+        ))}
+
+        <div className="mt-auto">
+          <SidebarMenu>
+            {navSecondary.map((s) => (
+              <SidebarMenuItem key={s.title}>
+                <SidebarMenuButton asChild>
+                  <a href={s.url} className="flex items-center gap-2">
+                    <span className="truncate">{s.title}</span>
+                  </a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </div>
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
