@@ -38,12 +38,15 @@ export function ClusterControls({ k, setK, onTrain, isLoading }: ControlsProps) 
         {/* K-Means Slider */}
         <div className="space-y-2">
           <Label>Number of Clusters (k): {k}</Label>
-          <Slider 
-            value={[k]} 
-            min={2} 
-            max={10} 
-            step={1} 
-            onValueChange={(val) => setK(val[0])} 
+          <Slider
+            value={[k]}
+            min={2}
+            max={10}
+            step={1}
+            onValueChange={(val: unknown) => {
+              const v = Array.isArray(val) ? (val[0] as number | undefined) : (val as number | undefined)
+              setK((v ?? k) as number)
+            }}
           />
         </div>
 
