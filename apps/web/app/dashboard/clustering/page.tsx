@@ -14,6 +14,26 @@ export default function ClusteringPage() {
   const initialK = Number(searchParams.get("k") || "3")
   const [k, setK] = useState(initialK)
   const pathname = usePathname()
+  const [dimension, setDimension] = useState<"2d" | "3d">("2d")
+  const [helpOpen, setHelpOpen] = useState(false)
+
+  const algorithm = searchParams.get("algorithm") || "kmeans"
+  const algDisplayNameMap: Record<string, string> = {
+    kmeans: "K-Means Clustering",
+    kmedoids: "K-Medoids",
+    meanshift: "Mean Shift",
+    fuzzycmeans: "Fuzzy C-Means",
+    dbscan: "DBSCAN",
+    hdbscan: "HDBSCAN",
+    optics: "OPTICS",
+    agglomerative: "Agglomerative",
+    birch: "BIRCH",
+    bisecting_kmeans: "Bisecting K-Means",
+    gmm: "Gaussian Mixture (GMM)",
+    spectral: "Spectral Clustering",
+    affinity: "Affinity Propagation",
+  }
+  const algorithmTitle = algDisplayNameMap[algorithm] ?? algorithm
 
   useEffect(() => {
     // Persist selected `k` to the URL so the view is linkable
@@ -52,6 +72,30 @@ export default function ClusteringPage() {
 
       {/* RIGHT COLUMN: Visualization */}
       <div className="lg:col-span-3 space-y-6">
+        {/* Header: Algorithm title and toggles */}
+        <div className="flex items-center justify-between bg-white p-4 rounded shadow">
+          <div>
+            <h2 className="text-xl font-semibold">{algorithmTitle}</h2>
+            <p className="text-sm text-slate-500">Visualization and controls for {algorithmTitle}</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="flex rounded-md bg-slate-50 p-1">
+              <button
+                onClick={() => setDimension("2d")}
+                className={`px-3 py-1 rounded ${dimension === "2d" ? "bg-white shadow" : "text-slate-600"}`}
+              >
+                2D
+              </button>
+              <button
+                onClick={() => setDimension("3d")}
+                className={`px-3 py-1 rounded ${dimension === "3d" ? "bg-white shadow" : "text-slate-600"}`}
+              >
+                3D
+              </button>
+            </div>
+            <button onClick={() => setHelpOpen(true)} className="px-3 py-1 rounded bg-sky-600 text-white">Help</button>
+          </div>
+        </div>
         <div className="flex h-[500px] w-full items-center justify-center rounded-xl border bg-slate-50 shadow-sm relative overflow-hidden">
           {isFetching ? (
              <div className="animate-pulse text-primary font-bold">Training Model...</div>
@@ -59,6 +103,27 @@ export default function ClusteringPage() {
             <ClusterPlot points={data.points} />
           ) : (
             <span className="text-muted-foreground">Adjust parameters and hit Run</span>
+          )}
+          {/* Help overlay/drawer */}
+          {helpOpen && (
+            <div className="absolute right-0 top-0 h-full w-96 bg-white border-l shadow-lg z-20 p-4">
+              <div className="flex items-start justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold">What is {algorithmTitle}?</h3>
+                  <p className="text-sm text-slate-600 mt-1">A short overview and guidance for {algorithmTitle}.</p>
+                </div>
+                <button onClick={() => setHelpOpen(false)} className="text-slate-500">Close</button>
+              </div>
+
+              <div className="mt-4 text-sm text-slate-700 space-y-3">
+                <p>
+                  This panel contains a brief description, common hyperparameters, and tips for interpreting results.
+                </p>
+                <p>
+                  Example: For K-Means, choose `k` based on domain knowledge or silhouette scores. For DBSCAN, tune epsilon and minSamples.
+                </p>
+              </div>
+            </div>
           )}
         </div>
       </div>

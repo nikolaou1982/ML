@@ -1,133 +1,80 @@
 "use client"
 
 import * as React from "react"
-import {
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  LifeBuoy,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
-} from "lucide-react"
+"use client"
 
-import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import { SidebarGroup, SidebarGroupLabel } from "@/components/ui/sidebar"
-import { Send } from "lucide-react"
+import Link from "next/link"
+import * as React from "react"
 
-const categories = [
+const groups = [
   {
-    title: "Partitioning (Centroid-based)",
+    title: "Partitioning",
+    icon: "📁",
     items: [
-      { id: "kmeans", title: "K-Means (The Classic)" },
-      { id: "kmedoids", title: "K-Medoids (Robust to outliers)" },
-      { id: "meanshift", title: "Mean Shift (No k required) (New)" },
-      { id: "fuzzycmeans", title: "Fuzzy C-Means (Soft clustering)" },
+      { key: "kmeans", label: "K-Means (The Classic)" },
+      { key: "kmedoids", label: "K-Medoids (Robust to outliers)" },
+      { key: "meanshift", label: "Mean Shift (No k required)" },
+      { key: "fuzzycmeans", label: "Fuzzy C-Means (Soft clustering)" },
     ],
   },
   {
-    title: "Density-Based (Shape-based)",
+    title: "Density",
+    icon: "📁",
     items: [
-      { id: "dbscan", title: "DBSCAN (The Classic)" },
-      { id: "hdbscan", title: "HDBSCAN (The Modern Standard - Must have)" },
-      { id: "optics", title: "OPTICS (Variable density)" },
+      { key: "dbscan", label: "DBSCAN (The Classic)" },
+      { key: "hdbscan", label: "HDBSCAN (Must have)" },
+      { key: "optics", label: "OPTICS (Variable density)" },
     ],
   },
   {
-    title: "Hierarchical (Tree-based)",
+    title: "Hierarchical",
+    icon: "📁",
     items: [
-      { id: "agglomerative", title: "Agglomerative (Bottom-up)" },
-      { id: "birch", title: "BIRCH (For large datasets) (New)" },
-      { id: "bisecting_kmeans", title: "Bisecting K-Means (Replaces \"Hierarchical K-Means\")" },
+      { key: "agglomerative", label: "Agglomerative (Bottom-up)" },
+      { key: "birch", label: "BIRCH (For large datasets)" },
+      { key: "bisecting_kmeans", label: "Bisecting K-Means" },
     ],
   },
   {
-    title: "Probabilistic & Graph",
+    title: "Spectral & Probabilistic",
+    icon: "📁",
     items: [
-      { id: "gmm", title: "Gaussian Mixture (GMM) (Elliptical clusters)" },
-      { id: "spectral", title: "Spectral Clustering (Graph connectivity)" },
-      { id: "affinity", title: "Affinity Propagation (Message passing) (New)" },
+      { key: "gmm", label: "Gaussian Mixture (GMM)" },
+      { key: "spectral", label: "Spectral Clustering" },
+      { key: "affinity", label: "Affinity Propagation (New)" },
     ],
   },
 ]
 
-const navSecondary = [
-  { title: "Support", url: "#", icon: LifeBuoy },
-  { title: "Feedback", url: "#", icon: Send },
-]
-
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export default function AppSidebar() {
   return (
-    <Sidebar
-      className="top-[--header-height] !h-[calc(100svh-var(--header-height))]"
-      {...props}
-    >
-      <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <a href="#">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <Command className="size-4" />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Acme Inc</span>
-                  <span className="truncate text-xs">Enterprise</span>
-                </div>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarHeader>
-      <SidebarContent>
-        {categories.map((cat) => (
-          <SidebarGroup key={cat.title}>
-            <SidebarGroupLabel>{cat.title}</SidebarGroupLabel>
-            <SidebarMenu>
-              {cat.items.map((it) => (
-                <SidebarMenuItem key={it.id ?? it.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={`/dashboard/clustering?algorithm=${it.id}`} className="flex items-center gap-2">
-                      <span className="truncate">{it.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroup>
-        ))}
+    <aside className="w-64 bg-white border-r p-4 flex flex-col">
+      <div className="mb-6 font-bold text-lg">Clustering</div>
 
-        <div className="mt-auto">
-          <SidebarMenu>
-            {navSecondary.map((s) => (
-              <SidebarMenuItem key={s.title}>
-                <SidebarMenuButton asChild>
-                  <a href={s.url} className="flex items-center gap-2">
-                    <span className="truncate">{s.title}</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </div>
-      </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter>
-    </Sidebar>
+      <nav className="flex-1 overflow-auto">
+        {groups.map((g) => (
+          <div key={g.title} className="mb-4">
+            <div className="px-2 py-1 text-sm font-medium text-slate-600 flex items-center gap-2">
+              <span>{g.icon}</span>
+              <span>{g.title}</span>
+            </div>
+            <ul className="mt-2 space-y-1">
+              {g.items.map((it) => (
+                <li key={it.key}>
+                  <Link
+                    href={`/dashboard/clustering?algorithm=${it.key}`}
+                    className="block px-3 py-2 rounded hover:bg-slate-100"
+                  >
+                    {it.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </nav>
+
+      <div className="mt-auto text-xs text-slate-500">Select an algorithm to load controls</div>
+    </aside>
   )
 }
