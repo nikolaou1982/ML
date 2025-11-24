@@ -7,6 +7,15 @@ import axios from "axios"
 import ClusterPlot from "@/components/cluster-plot"
 import { useRouter, useSearchParams, usePathname } from "next/navigation"
 import { useEffect } from "react"
+import { SectionCards } from "@/components/section-cards"
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerClose,
+} from "@/components/ui/drawer"
 
 export default function ClusteringPage() {
   const searchParams = useSearchParams()
@@ -72,6 +81,9 @@ export default function ClusteringPage() {
 
       {/* RIGHT COLUMN: Visualization */}
       <div className="lg:col-span-3 space-y-6">
+        {/* Top KPI cards */}
+        <SectionCards />
+
         {/* Header: Algorithm title and toggles */}
         <div className="flex items-center justify-between bg-white p-4 rounded shadow">
           <div>
@@ -104,28 +116,34 @@ export default function ClusteringPage() {
           ) : (
             <span className="text-muted-foreground">Adjust parameters and hit Run</span>
           )}
-          {/* Help overlay/drawer */}
-          {helpOpen && (
-            <div className="absolute right-0 top-0 h-full w-96 bg-white border-l shadow-lg z-20 p-4">
-              <div className="flex items-start justify-between">
-                <div>
-                  <h3 className="text-lg font-semibold">What is {algorithmTitle}?</h3>
-                  <p className="text-sm text-slate-600 mt-1">A short overview and guidance for {algorithmTitle}.</p>
-                </div>
-                <button onClick={() => setHelpOpen(false)} className="text-slate-500">Close</button>
-              </div>
-
-              <div className="mt-4 text-sm text-slate-700 space-y-3">
-                <p>
-                  This panel contains a brief description, common hyperparameters, and tips for interpreting results.
-                </p>
-                <p>
-                  Example: For K-Means, choose `k` based on domain knowledge or silhouette scores. For DBSCAN, tune epsilon and minSamples.
-                </p>
-              </div>
-            </div>
-          )}
         </div>
+
+        {/* Help Drawer (vaul-based) */}
+        <Drawer open={helpOpen} onOpenChange={setHelpOpen}>
+          <DrawerContent>
+            <DrawerHeader>
+              <DrawerTitle>What is {algorithmTitle}?</DrawerTitle>
+              <DrawerDescription>
+                A short overview and guidance for {algorithmTitle}.
+              </DrawerDescription>
+            </DrawerHeader>
+
+            <div className="p-4 text-sm text-slate-700 space-y-3">
+              <p>
+                This panel contains a brief description, common hyperparameters, and tips for interpreting results.
+              </p>
+              <p>
+                Example: For K-Means, choose `k` based on domain knowledge or silhouette scores. For DBSCAN, tune epsilon and minSamples.
+              </p>
+            </div>
+
+            <div className="p-4">
+              <DrawerClose asChild>
+                <button className="w-full rounded bg-slate-100 py-2">Close</button>
+              </DrawerClose>
+            </div>
+          </DrawerContent>
+        </Drawer>
       </div>
     </div>
   )
